@@ -1,0 +1,35 @@
+{
+  "packVersion": "1.2.0",
+  "minAppVersion": "1.0.0",
+  "releasedAt": "2026-06-15T08:00:00.000Z",
+  "toolCount": 53,
+  "quizCount": 5,
+  "sizeBytes": 247561,
+  "sha256": "dd0acf13501a17dc17e304eecb7734a89ee6451510eeb70e878107a426b9c867",
+  "changelog": {
+    "toolsAdded": [
+      "Edge Distance Gauge",
+      "Rivet Cutter",
+      "Hydraulic Crimping Tool",
+      "Wire Stripper",
+      "Digital Multimeter"
+    ],
+    "toolsUpdated": [
+      "Pneumatic Rivet Gun (3X)",
+      "Combination Wrench Set",
+      "Outside Micrometer 0–1 in",
+      "Click Torque Wrench (in-lb)",
+      "Safety Wire Pliers (Twister)"
+    ],
+    "toolsRemoved": [
+      "Random Orbital Sander",
+      "Hacksaw"
+    ],
+    "quizzesAdded": [
+      "Hand Tool Safety & Care"
+    ],
+    "quizzesUpdated": [],
+    "quizzesRemoved": [],
+    "notes": "Adds 5 tools, removes 2, refreshes 5 and adds a Hand Tool Safety quiz."
+  }
+}
