@@ -101,7 +101,7 @@ export default function Users({ users, filters, roles, counts }: Props) {
                 {f.active ? <Button variant="ghost" size="sm" icon="cross-small" onClick={f.clear}>Clear</Button> : null}
             </Toolbar>
 
-            <Table head={['User', 'Roles', { label: 'Section', className: 'hidden md:table-cell' }, 'Status', { label: 'Last sign-in', className: 'hidden lg:table-cell' }, '']}
+            <Table head={['User', { label: 'Roles', className: 'hidden sm:table-cell' }, { label: 'Section', className: 'hidden md:table-cell' }, { label: 'Status', className: 'hidden sm:table-cell' }, { label: 'Last sign-in', className: 'hidden lg:table-cell' }, '']}
                 empty={!users.data.length ? <EmptyState icon="users" title="No users match" description="Try a different search or clear the filters." /> : null}>
                 {users.data.map((u) => (
                     <tr key={u.id} className="transition-colors hover:bg-surface-2/50">
@@ -110,13 +110,14 @@ export default function Users({ users, filters, roles, counts }: Props) {
                                 <Avatar src={u.avatar} name={u.full_name} initials={u.initials} size={38} />
                                 <div className="min-w-0">
                                     <button type="button" disabled={!manage} onClick={() => setEditing(u)} className="block truncate text-left font-semibold text-text hover:text-primary disabled:hover:text-text">{u.full_name || '—'}</button>
-                                    <p className="truncate text-xs text-muted">{u.email}{u.id_number ? ` · ${u.id_number}` : ''}</p>
+                                    <p className="truncate text-xs text-muted">{u.email}<span className="hidden sm:inline">{u.id_number ? ` · ${u.id_number}` : ''}</span></p>
+                                    <div className="mt-1 flex flex-wrap gap-1 sm:hidden">{u.roles.map((r) => <Badge key={r.name} tone={ROLE_TONE[r.name] ?? 'neutral'}>{r.label}</Badge>)}{u.is_active ? null : <Badge tone="danger" dot>Deactivated</Badge>}</div>
                                 </div>
                             </div>
                         </Td>
-                        <Td><div className="flex flex-wrap gap-1">{u.roles.map((r) => <Badge key={r.name} tone={ROLE_TONE[r.name] ?? 'neutral'}>{r.label}</Badge>)}</div></Td>
+                        <Td className="hidden sm:table-cell"><div className="flex flex-wrap gap-1">{u.roles.map((r) => <Badge key={r.name} tone={ROLE_TONE[r.name] ?? 'neutral'}>{r.label}</Badge>)}</div></Td>
                         <Td className="hidden md:table-cell">{u.section || '—'}</Td>
-                        <Td>{u.is_active ? <Badge tone="success" dot>Active</Badge> : <Badge tone="danger" dot>Deactivated</Badge>}</Td>
+                        <Td className="hidden sm:table-cell">{u.is_active ? <Badge tone="success" dot>Active</Badge> : <Badge tone="danger" dot>Deactivated</Badge>}</Td>
                         <Td className="hidden whitespace-nowrap text-xs lg:table-cell">{timeAgo(u.last_login_at)}</Td>
                         <Td className="text-right">
                             {manage ? (

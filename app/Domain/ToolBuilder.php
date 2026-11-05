@@ -184,6 +184,24 @@ final class ToolBuilder
         ];
     }
 
+    /** Content equality ignoring `updatedAt` and key order (MySQL JSON columns reorder keys). */
+    private static function same(?array $a, array $b): bool
+    {
+        $norm = function ($v) use (&$norm) {
+            if (! is_array($v)) {
+                return is_float($v) && floor($v) == $v ? (int) $v : $v;
+            }
+            if (! array_is_list($v)) {
+                ksort($v);
+            }
+
+            return array_map($norm, $v);
+        };
+        unset($a['updatedAt'], $b['updatedAt']);
+
+        return $a !== null && json_encode($norm($a)) === json_encode($norm($b));
+    }
+
     /** Validated input → saved row. `updatedAt` drives the pack changelog ("updated"). */
     public static function persist(array $i, ?int $sort = null): Tool
     {
@@ -195,6 +213,10 @@ final class ToolBuilder
 
         return DB::transaction(function () use ($id, $tool, $i, $sort) {
             $row = Tool::find($id) ?? new Tool(['id' => $id]);
+            // Saving identical content (e.g. re-importing an unchanged export) must not mark the tool "updated" in the next pack.
+            if ($row->exists && self::same($row->data, $tool)) {
+                $tool['updatedAt'] = $row->data['updatedAt'] ?? $tool['updatedAt'];
+            }
             $row->fill([
                 'slug' => $tool['slug'], 'name' => $tool['name'], 'category' => $tool['category'], 'subcategory' => $tool['subcategory'],
                 'brand' => $tool['brand'], 'unit_system' => $tool['unitSystem'], 'data' => $tool,

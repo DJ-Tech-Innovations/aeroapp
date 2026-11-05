@@ -2,9 +2,11 @@ import * as Dialog from '@radix-ui/react-dialog';
 import * as Menu from '@radix-ui/react-dropdown-menu';
 import * as Tip from '@radix-ui/react-tooltip';
 import clsx, { type ClassValue } from 'clsx';
+import { twMerge } from 'tailwind-merge';
 import { createContext, forwardRef, useCallback, useContext, useId, useState, type ButtonHTMLAttributes, type InputHTMLAttributes, type ReactNode, type SelectHTMLAttributes, type TextareaHTMLAttributes } from 'react';
 
-export const cn = (...v: ClassValue[]) => clsx(v);
+/** Class names with Tailwind conflict resolution (a caller's `hidden` beats a component's `inline-flex`). */
+export const cn = (...v: ClassValue[]) => twMerge(clsx(v));
 
 /* ───────────── Icons (Flaticon UIcons, regular + solid rounded) ───────────── */
 

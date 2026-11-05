@@ -16,6 +16,12 @@ use Symfony\Component\HttpFoundation\Response as HttpResponse;
 
 class ToolImportController extends Controller
 {
+    public function __construct()
+    {
+        // Large workbooks (up to 500 tools with dropdowns) need more than the common 128 MB default.
+        @ini_set('memory_limit', '512M');
+    }
+
     public function index(): Response
     {
         return Inertia::render('admin/tools/import', ['total' => Tool::count(), 'maxRows' => ToolExcel::MAX_ROWS, 'maxMb' => ToolExcel::MAX_BYTES / 1048576]);

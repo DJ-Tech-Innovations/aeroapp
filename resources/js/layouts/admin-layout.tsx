@@ -1,6 +1,6 @@
 import * as Dialog from '@radix-ui/react-dialog';
 import { Link, router, usePage } from '@inertiajs/react';
-import { Fragment, useEffect, useState, type ReactNode } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 import { toast } from 'sonner';
 import { IconCredit, LogoMark } from '@/components/brand';
 import { Avatar, cn, DropdownContent, DropdownItem, DropdownLabel, DropdownMenu, DropdownSeparator, DropdownTrigger, Icon, IconButton, Tooltip } from '@/components/ui';
@@ -114,9 +114,14 @@ function Sidebar({ collapsed = false, onNavigate, onClose }: { collapsed?: boole
 }
 
 function Breadcrumbs() {
-    const { url } = usePage();
+    const { url, props } = usePage<SharedProps & { tool?: { name: string } | null; quiz?: { title: string } | null; klass?: { name: string } }>();
     const parts = url.split('?')[0].split('/').filter(Boolean);
-    const crumbs = parts.map((p, i) => ({ label: LABELS[p] ?? (p.length > 20 ? 'Details' : decodeURIComponent(p)), href: '/' + parts.slice(0, i + 1).join('/') }));
+    // Detail pages: show the item's name instead of its id.
+    const itemName = props.tool?.name ?? props.quiz?.title ?? props.klass?.name;
+    const crumbs = parts.map((p, i) => ({
+        label: LABELS[p] ?? (i === parts.length - 1 && itemName ? itemName : p.length > 20 || p.startsWith('quiz-') ? 'Details' : decodeURIComponent(p)),
+        href: '/' + parts.slice(0, i + 1).join('/'),
+    }));
     return (
         <nav aria-label="Breadcrumb" className="min-w-0 flex-1">
             <ol className="flex items-center gap-1.5 text-sm">
@@ -239,4 +244,3 @@ export function PageHeader({ title, description, actions, back, icon }: { title:
     );
 }
 
-export { Fragment };

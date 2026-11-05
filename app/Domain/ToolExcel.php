@@ -153,8 +153,11 @@ final class ToolExcel
 
         ob_start();
         (new Xlsx($book))->save('php://output');
+        $bytes = (string) ob_get_clean();
+        $book->disconnectWorksheets(); // PhpSpreadsheet keeps cyclic references; free them now
+        unset($book);
 
-        return (string) ob_get_clean();
+        return $bytes;
     }
 
     private static function instructions(Spreadsheet $book, ?int $exported): void
@@ -240,6 +243,8 @@ final class ToolExcel
         $tools = self::read($book->getSheetByName('Tools'), self::toolCols());
         $parts = self::read($book->getSheetByName('Parts'), self::partCols());
         $refs = self::read($book->getSheetByName('References'), self::refCols());
+        $book->disconnectWorksheets();
+        unset($book);
         $problems = [];
         if (! $tools) {
             return ['rows' => [], 'problems' => ['The file has no “Tools” sheet. Start from the template.'], 'inputs' => []];

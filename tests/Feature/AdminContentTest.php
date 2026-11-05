@@ -1,7 +1,9 @@
 <?php
 
 use App\Domain\Catalog;
+use App\Domain\PackDiff;
 use App\Domain\PackService;
+use App\Domain\ToolBuilder;
 use App\Domain\ToolExcel;
 use App\Models\ContentPack;
 use App\Models\Tool;
@@ -77,4 +79,19 @@ it('imports all-or-nothing through the endpoint', function () {
     $file = UploadedFile::fake()->createWithContent('t.xlsx', $bytes);
     $this->actingAs($admin)->post('/admin/tools/import/check', ['file' => $file], ['Accept' => 'application/json'])
         ->assertOk()->assertJsonPath('problems.0', 'The Tools sheet has no tools.');
+});
+
+it('does not mark tools as updated when an unchanged export is imported again', function () {
+    $import = function () {
+        $file = tempnam(sys_get_temp_dir(), 'x').'.xlsx';
+        file_put_contents($file, ToolExcel::workbook(Tool::orderBy('sort_order')->get()));
+        foreach (ToolExcel::plan($file)['inputs'] as $i) {
+            ToolBuilder::persist($i);
+        }
+    };
+    $import(); // first pass may normalise hand-made fixture data
+    $before = PackService::buildPayload();
+    $import(); // second pass: identical content
+    $diff = PackDiff::diff($before, PackService::buildPayload());
+    expect($diff['toolsUpdated'])->toBe([])->and($diff['toolsAdded'])->toBe([]);
 });

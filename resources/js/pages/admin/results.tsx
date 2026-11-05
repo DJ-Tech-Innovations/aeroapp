@@ -29,12 +29,12 @@ export default function Results({ attempts, summary, filters, quizzes, classes }
                 <FilterSelect value={f.values.result} onChange={(v) => f.set('result', v)} placeholder="Any result" options={[{ value: 'passed', label: 'Passed' }, { value: 'failed', label: 'Not passed' }]} />
                 {f.active ? <Button variant="ghost" size="sm" icon="cross-small" onClick={f.clear}>Clear</Button> : null}
             </Toolbar>
-            <Table head={['Student', 'Quiz', 'Score', 'Result', { label: 'Pack', className: 'hidden md:table-cell' }, { label: 'Submitted', className: 'hidden lg:table-cell' }]}
+            <Table head={['Student', { label: 'Quiz', className: 'hidden sm:table-cell' }, 'Score', { label: 'Result', className: 'hidden sm:table-cell' }, { label: 'Pack', className: 'hidden md:table-cell' }, { label: 'Submitted', className: 'hidden lg:table-cell' }]}
                 empty={!attempts.data.length ? <EmptyState icon="chart-histogram" title="No attempts found" description="Results appear once learners take quizzes and their devices sync." /> : null}>
                 {attempts.data.map((a) => (
                     <tr key={a.id} className="hover:bg-surface-2/50">
-                        <Td><p className="font-semibold text-text">{a.student}</p><p className="text-xs text-muted">{a.idNumber}</p></Td>
-                        <Td><p className="text-text">{a.quizTitle}</p>{a.quizMode === 'exam' ? <Badge tone="danger" className="mt-1">Exam</Badge> : null}</Td>
+                        <Td><p className="font-semibold text-text">{a.student}</p><p className="text-xs text-muted">{a.idNumber}</p><p className="text-xs text-text-2 sm:hidden">{a.quizTitle}</p></Td>
+                        <Td className="hidden sm:table-cell"><p className="text-text">{a.quizTitle}</p>{a.quizMode === 'exam' ? <Badge tone="danger" className="mt-1">Exam</Badge> : null}</Td>
                         <Td>
                             <div className="flex items-center gap-2">
                                 <div className="h-1.5 w-16 overflow-hidden rounded-full bg-surface-3"><div className={cn('h-full rounded-full', a.passed ? 'bg-success' : 'bg-danger')} style={{ width: `${a.percent}%` }} /></div>
@@ -42,7 +42,7 @@ export default function Results({ attempts, summary, filters, quizzes, classes }
                             </div>
                             <p className="text-xs text-muted">{a.score}/{a.maxScore} pts</p>
                         </Td>
-                        <Td>{a.passed ? <Badge tone="success" icon="check">Passed</Badge> : <Badge tone="danger" icon="cross-small">Not passed</Badge>}</Td>
+                        <Td className="hidden sm:table-cell">{a.passed ? <Badge tone="success" icon="check">Passed</Badge> : <Badge tone="danger" icon="cross-small">Not passed</Badge>}</Td>
                         <Td className="hidden font-mono text-xs md:table-cell">v{a.packVersion}</Td>
                         <Td className="hidden whitespace-nowrap text-xs lg:table-cell">{fmtDateTime(a.submittedAt)}</Td>
                     </tr>

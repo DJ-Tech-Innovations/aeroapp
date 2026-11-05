@@ -8,7 +8,7 @@ export function Table({ head, children, className, empty }: { head: (ReactNode |
     return (
         <div className={cn('overflow-hidden rounded-2xl bg-surface shadow-card', className)}>
             <div className="overflow-x-auto">
-                <table className="w-full min-w-[640px] text-left text-sm">
+                <table className="w-full text-left text-sm sm:min-w-[640px]">
                     <thead className="border-b border-border bg-surface-2/60">
                         <tr>
                             {head.map((h, i) => {
@@ -101,7 +101,7 @@ export function MiniStats({ items }: { items: { label: string; value: ReactNode;
                     <span className={cn('flex size-10 shrink-0 items-center justify-center rounded-xl text-lg', s.tone ?? 'bg-primary-soft text-primary-soft-fg')}><Icon name={s.icon} /></span>
                     <div className="min-w-0">
                         <p className="text-xl font-bold leading-tight text-text tabular-nums">{s.value}</p>
-                        <p className="truncate text-xs text-muted">{s.label}</p>
+                        <p className="text-xs leading-tight text-muted">{s.label}</p>
                     </div>
                 </Card>
             ))}

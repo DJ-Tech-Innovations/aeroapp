@@ -18,15 +18,15 @@ export default function Audit({ entries, filters, types }: { entries: Paginated<
                 <SearchInput value={f.values.q} onChange={(v) => f.set('q', v)} placeholder="Search person or subject" />
                 <FilterSelect value={f.values.type} onChange={(v) => f.set('type', v)} placeholder="All areas" options={types.map((t) => ({ value: t, label: t[0].toUpperCase() + t.slice(1) }))} />
             </Toolbar>
-            <Table head={['When', 'Who', 'Action', 'Subject']} empty={!entries.data.length ? <EmptyState icon="time-past" title="Nothing recorded yet" /> : null}>
+            <Table head={['When', { label: 'Who', className: 'hidden sm:table-cell' }, 'Action', { label: 'Subject', className: 'hidden md:table-cell' }]} empty={!entries.data.length ? <EmptyState icon="time-past" title="Nothing recorded yet" /> : null}>
                 {entries.data.map((e) => {
                     const [area, verb = ''] = e.action.split('.');
                     return (
                         <tr key={e.id} className="hover:bg-surface-2/50">
                             <Td className="whitespace-nowrap"><p className="text-text">{timeAgo(e.at)}</p><p className="text-xs text-muted">{fmtDateTime(e.at)}</p></Td>
-                            <Td className="font-medium text-text">{e.user}</Td>
-                            <Td><div className="flex items-center gap-2"><span className="flex size-8 items-center justify-center rounded-lg bg-surface-2 text-muted"><Icon name={ICON[area] ?? 'bolt'} /></span><Badge tone={TONE[verb.split('_')[0]] ?? 'neutral'} className="capitalize">{area} {verb.replace(/_/g, ' ')}</Badge></div></Td>
-                            <Td>
+                            <Td className="hidden font-medium text-text sm:table-cell">{e.user}</Td>
+                            <Td><div className="flex items-center gap-2"><span className="flex size-8 items-center justify-center rounded-lg bg-surface-2 text-muted"><Icon name={ICON[area] ?? 'bolt'} /></span><div className="min-w-0"><Badge tone={TONE[verb.split('_')[0]] ?? 'neutral'} className="capitalize">{area} {verb.replace(/_/g, ' ')}</Badge><p className="mt-1 truncate text-xs text-muted md:hidden">{e.user} · {e.subject}</p></div></div></Td>
+                            <Td className="hidden md:table-cell">
                                 <p className="text-text">{e.subject || '—'}</p>
                                 {e.meta ? <p className="font-mono text-[11px] text-muted">{Object.entries(e.meta).map(([k, v]) => `${k}: ${Array.isArray(v) ? v.join(', ') : String(v)}`).join(' · ')}</p> : null}
                             </Td>

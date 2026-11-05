@@ -84,13 +84,13 @@ export default function Packs(p: Props) {
             ) : null}
 
             <h2 className="mb-3 text-lg font-semibold text-text">Published packs</h2>
-            <Table head={['Version', 'Released', 'Contents', { label: 'Size', className: 'hidden md:table-cell' }, { label: 'SHA-256', className: 'hidden lg:table-cell' }, 'Status', '']}
+            <Table head={['Version', { label: 'Released', className: 'hidden sm:table-cell' }, { label: 'Contents', className: 'hidden sm:table-cell' }, { label: 'Size', className: 'hidden md:table-cell' }, { label: 'SHA-256', className: 'hidden lg:table-cell' }, 'Status', '']}
                 empty={!p.packs.data.length ? <EmptyState icon="box" title="No packs yet" description="Publish your first pack to deliver content to learners." /> : null}>
                 {p.packs.data.map((pk, i) => (
                     <tr key={pk.version} className="hover:bg-surface-2/50">
                         <Td><button type="button" onClick={() => setDetails(pk)} className="flex items-center gap-2 font-mono font-semibold text-text hover:text-primary">v{pk.version}{i === 0 && p.packs.current_page === 1 && pk.isPublished ? <Badge tone="primary">Latest</Badge> : null}</button></Td>
-                        <Td className="whitespace-nowrap text-xs">{fmtDateTime(pk.releasedAt)}</Td>
-                        <Td className="whitespace-nowrap">{pk.tools} tools · {pk.quizzes} quizzes</Td>
+                        <Td className="hidden whitespace-nowrap text-xs sm:table-cell">{fmtDateTime(pk.releasedAt)}</Td>
+                        <Td className="hidden whitespace-nowrap sm:table-cell">{pk.tools} tools · {pk.quizzes} quizzes</Td>
                         <Td className="hidden md:table-cell">{fmtBytes(pk.size)}</Td>
                         <Td className="hidden font-mono text-xs lg:table-cell">{pk.sha256.slice(0, 12)}…</Td>
                         <Td>{pk.isPublished ? <Badge tone="success" dot>Live</Badge> : <Badge tone="warning" dot>Withdrawn</Badge>}</Td>
