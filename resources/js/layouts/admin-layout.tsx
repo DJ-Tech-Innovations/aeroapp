@@ -4,6 +4,7 @@ import { useEffect, useState, type ReactNode } from 'react';
 import { toast } from 'sonner';
 import { IconCredit, LogoMark } from '@/components/brand';
 import { Avatar, cn, DropdownContent, DropdownItem, DropdownLabel, DropdownMenu, DropdownSeparator, DropdownTrigger, Icon, IconButton, Tooltip } from '@/components/ui';
+import { InstallAppMenuItem } from '@/components/install-app';
 import { useTheme } from '@/lib/theme';
 import { can, type SharedProps } from '@/types';
 
@@ -160,6 +161,7 @@ function AccountMenu() {
                 <DropdownSeparator />
                 <DropdownItem icon="user" onSelect={() => router.visit('/admin/account')}>My account</DropdownItem>
                 <DropdownItem icon="graduation-cap" onSelect={() => (window.location.href = '/app')}>Open learner app</DropdownItem>
+                <InstallAppMenuItem />
                 <DropdownSeparator />
                 <DropdownLabel>Theme</DropdownLabel>
                 {(['light', 'dark', 'system'] as const).map((m) => (

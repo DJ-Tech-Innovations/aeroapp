@@ -28,7 +28,8 @@ export function ModelStudio({ toolId, initialJobs, initialPhotos, ai, canUseAi, 
     const confirm = useConfirm();
     const [jobs, setJobs] = useState(initialJobs);
     const [photos, setPhotos] = useState(initialPhotos);
-    const [selected, setSelected] = useState<string[]>([]);
+    // Preselect saved photos so "Generate" works straight away after a reload.
+    const [selected, setSelected] = useState<string[]>(() => initialPhotos.slice(0, MAX_PHOTOS).map((p) => p.path));
     const [busy, setBusy] = useState<'upload' | 'generate' | 'suggest' | null>(null);
     const [msg, setMsg] = useState<Msg>(null);
     const [partsMsg, setPartsMsg] = useState<Msg>(null);
@@ -214,6 +215,11 @@ export function ModelStudio({ toolId, initialJobs, initialPhotos, ai, canUseAi, 
                         <Button block icon="magic-wand" onClick={() => generate(selected)} loading={busy === 'generate'} disabled={!ai.meshy || !selected.length || !!busy}>
                             Generate 3D model{selected.length ? ` from ${selected.length} photo${selected.length > 1 ? 's' : ''}` : ''}
                         </Button>
+                        {!ai.meshy ? (
+                            <Alert tone="warning" title="Meshy API key needed">
+                                Generation is off until a Meshy key is added. Ask an admin to add it in <a href="/admin/settings" className="font-semibold underline">Settings → AI services</a>, or set MESHY_API_KEY in .env.
+                            </Alert>
+                        ) : !selected.length && photos.length ? <p className="text-xs text-muted">Tap a photo above to select it.</p> : null}
                         {msg ? <Alert tone={msg.tone}>{msg.text}</Alert> : null}
                     </div>
                 ) : null}

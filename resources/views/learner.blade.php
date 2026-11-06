@@ -5,7 +5,9 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
         <meta name="theme-color" content="#172554">
         <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="mobile-web-app-capable" content="yes">
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+        <meta name="apple-mobile-web-app-title" content="AeroApp">
         <meta name="description" content="Learn aircraft maintenance tools with 3D models, narration and quizzes — works offline.">
         <title>{{ config('app.name') }}</title>
         <link rel="manifest" href="/manifest.webmanifest">

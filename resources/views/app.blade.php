@@ -8,6 +8,12 @@
             // Apply the saved theme before first paint.
             try { var t = localStorage.getItem('aeroapp.theme') || 'system'; if (t === 'dark' || (t === 'system' && matchMedia('(prefers-color-scheme: dark)').matches)) document.documentElement.classList.add('dark'); } catch (e) {}
         </script>
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+        <meta name="apple-mobile-web-app-title" content="{{ request()->is('admin*') ? 'AeroApp Admin' : 'AeroApp' }}">
+        {{-- Admin pages install as "AeroApp Admin"; sign-in pages install the learner app. --}}
+        <link rel="manifest" href="{{ request()->is('admin*') ? '/admin.webmanifest' : '/manifest.webmanifest' }}">
         <link rel="icon" href="/icons/icon.svg" type="image/svg+xml">
         <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
         @viteReactRefresh

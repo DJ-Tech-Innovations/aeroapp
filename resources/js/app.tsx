@@ -4,6 +4,10 @@ import type { ComponentType } from 'react';
 import { Toaster } from 'sonner';
 import { ConfirmProvider, TooltipProvider } from '@/components/ui';
 import AdminLayout from '@/layouts/admin-layout';
+import { captureInstallPrompt } from '@/learner/lib/pwa';
+
+// `beforeinstallprompt` fires once, early — capture it before any page mounts.
+captureInstallPrompt();
 
 const pages = import.meta.glob<{ default: ComponentType }>('./pages/**/*.tsx');
 

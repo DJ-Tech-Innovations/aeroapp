@@ -1,6 +1,7 @@
 import { Head, Link, useForm } from '@inertiajs/react';
 import { useState, type FormEvent } from 'react';
 import { Alert, Button, Checkbox, Field, Icon, Input } from '@/components/ui';
+import { InstallAppCard } from '@/components/install-app';
 import AuthLayout from '@/layouts/auth-layout';
 
 interface Props { status?: string | null; expired?: boolean; screen: { headline: string; message: string }; demoAccounts: { label: string; email: string }[] }
@@ -38,6 +39,8 @@ export default function Login({ status, expired, screen, demoAccounts }: Props) 
                     <Checkbox checked={form.data.remember} onChange={(v) => form.setData('remember', v)} label="Keep me signed in" description="Recommended on your own device — the app works offline for 14 days." />
                     <Button type="submit" size="lg" block loading={form.processing} iconRight="arrow-right">Sign in</Button>
                 </form>
+
+                <InstallAppCard />
 
                 {demoAccounts.length ? (
                     <div className="mt-8 rounded-2xl border border-dashed border-border-strong p-4">
