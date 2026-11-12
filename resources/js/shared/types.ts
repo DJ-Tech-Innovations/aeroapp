@@ -82,7 +82,7 @@ export interface PackPayload { tools: Tool[]; quizzes: Quiz[] }
 // ── users / classes ──
 export type Role = 'student' | 'instructor' | 'admin';
 export interface UserProfile {
-  id: string; role: Role; email: string; fullName: string; idNumber: string; school: string; section: string;
+  id: string; role: Role; email: string; fullName: string; idNumber: string; school: string; section: string; yearLevel: number | null;
   avatarUrl: string | null; pendingSync?: boolean;
 }
 export interface ClassRow { id: string; name: string; instructorId: string }

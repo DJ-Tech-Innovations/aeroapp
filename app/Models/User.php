@@ -27,11 +27,12 @@ use Spatie\Permission\Traits\HasRoles;
  * @property string $id_number
  * @property string $school
  * @property string $section
+ * @property int|null $year_level 1–4 for students, null for staff
  * @property string $phone
  * @property string|null $avatar_path
  * @property bool $is_active
  */
-#[Fillable(['email', 'password', 'full_name', 'id_number', 'school', 'section', 'phone'])]
+#[Fillable(['email', 'password', 'full_name', 'id_number', 'school', 'section', 'year_level', 'phone'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
@@ -47,6 +48,7 @@ class User extends Authenticatable
         return [
             'password' => 'hashed',
             'is_active' => 'boolean',
+            'year_level' => 'integer',
             'last_login_at' => 'datetime',
         ];
     }
@@ -136,6 +138,7 @@ class User extends Authenticatable
             'idNumber' => $this->id_number,
             'school' => $this->school,
             'section' => $this->section,
+            'yearLevel' => $this->year_level,
             'avatarUrl' => $this->avatarUrl(),
         ];
     }

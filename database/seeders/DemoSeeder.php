@@ -43,20 +43,35 @@ class DemoSeeder extends Seeder
         foreach (['Jordan Cruz', 'Sam Okafor', 'Taylor Nguyen', 'Casey Morales', 'Riley Patel', 'Jamie Santos', 'Drew Kim'] as $i => $name) {
             $people[] = ['student'.($i + 2).'@demo.com', 'student', $name, sprintf('AMT-2026-%03d', 20 + $i)];
         }
+        // Panel respondents: all faculty + 1st-year students. Faculty are instructors (no section / year level).
+        $faculty = [
+            ['instructor2@demo.com', 'instructor', 'Dana Villanueva', 'INS-0043'],
+            ['instructor3@demo.com', 'instructor', 'Chris Bautista', 'INS-0044'],
+        ];
         $ids = [];
-        foreach ($people as [$email, $role, $name, $idNo]) {
+        foreach ([...$people, ...$faculty] as [$email, $role, $name, $idNo]) {
+            $student = $role === 'student';
             $u = User::firstOrNew(['email' => $email]);
-            $u->fill(['full_name' => $name, 'id_number' => $idNo, 'school' => 'Northwind Aviation Institute', 'section' => 'AMT-2A', 'password' => 'password']);
+            $u->fill([
+                'full_name' => $name, 'id_number' => $idNo, 'school' => 'Northwind Aviation Institute', 'password' => 'password',
+                'section' => $student ? 'AMT-1A' : '', 'year_level' => $student ? 1 : null,
+            ]);
             $u->is_active = true;
             $u->save();
             $u->syncRoles([$role]);
             $ids[$email] = $u->id;
         }
 
-        $class = SchoolClass::firstOrCreate(['name' => 'AMT-2A'], ['instructor_id' => $ids['instructor@demo.com']]);
+        // Earlier demo data used 2nd-year classes; rename them in place so re-seeding keeps their ids.
+        foreach (['AMT-2A' => 'AMT-1A', 'AMT-2B' => 'AMT-1B'] as $from => $to) {
+            if (! SchoolClass::where('name', $to)->exists()) {
+                SchoolClass::where('name', $from)->update(['name' => $to]);
+            }
+        }
+        $class = SchoolClass::updateOrCreate(['name' => 'AMT-1A'], ['instructor_id' => $ids['instructor@demo.com']]);
         $students = collect($people)->where(1, 'student')->map(fn ($p) => $ids[$p[0]])->values();
         $class->students()->sync($students);
-        SchoolClass::firstOrCreate(['name' => 'AMT-2B'], ['instructor_id' => $ids['instructor@demo.com']]);
+        SchoolClass::updateOrCreate(['name' => 'AMT-1B'], ['instructor_id' => $ids['instructor2@demo.com']]);
 
         // Reset demo state.
         Spotlight::query()->delete();
@@ -131,6 +146,6 @@ class DemoSeeder extends Seeder
         }
         Attempt::insert($rows);
         $this->command?->info('  '.count($rows).' attempts for '.(count($people) - 4).' students');
-        $this->command?->info('Seeded. Sign in with admin@demo.com, editor@demo.com, instructor@demo.com or student@demo.com (password: password).');
+        $this->command?->info('Seeded. Sign in with admin@demo.com, editor@demo.com, instructor@demo.com (also instructor2/3@demo.com) or student@demo.com (password: password).');
     }
 }

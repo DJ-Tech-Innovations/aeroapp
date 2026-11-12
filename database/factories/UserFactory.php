@@ -20,7 +20,8 @@ class UserFactory extends Factory
             'password' => static::$password ??= Hash::make('password'),
             'id_number' => 'STU-'.fake()->unique()->numerify('#####'),
             'school' => 'Philippine State College of Aeronautics',
-            'section' => 'AMT-2A',
+            'section' => 'AMT-1A',
+            'year_level' => 1,
             'remember_token' => Str::random(10),
         ];
     }

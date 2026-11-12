@@ -34,11 +34,15 @@ class MeController extends Controller
             'idNumber' => ['sometimes', 'nullable', 'string', 'max:60'],
             'school' => ['sometimes', 'nullable', 'string', 'max:160'],
             'section' => ['sometimes', 'nullable', 'string', 'max:60'],
+            'yearLevel' => ['sometimes', 'nullable', 'integer', 'between:1,4'],
         ]);
         $map = ['fullName' => 'full_name', 'idNumber' => 'id_number', 'school' => 'school', 'section' => 'section'];
         $user = $request->user();
-        foreach ($data as $k => $v) {
+        foreach (array_intersect_key($data, $map) as $k => $v) {
             $user->{$map[$k]} = trim((string) $v);
+        }
+        if (array_key_exists('yearLevel', $data)) {
+            $user->year_level = $data['yearLevel'];
         }
         $user->save();
 

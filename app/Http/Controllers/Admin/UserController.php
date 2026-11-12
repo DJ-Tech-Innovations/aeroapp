@@ -21,19 +21,21 @@ class UserController extends Controller
         $q = trim((string) $request->query('q', ''));
         $role = (string) $request->query('role', '');
         $status = (string) $request->query('status', '');
+        $year = (int) $request->query('year', 0);
 
         $users = User::query()->with('roles:id,name,label')
             ->when($q, fn ($w) => $w->where(fn ($w) => $w->where('full_name', 'like', "%{$q}%")->orWhere('email', 'like', "%{$q}%")->orWhere('id_number', 'like', "%{$q}%")))
             ->when($role, fn ($w) => $w->role($role))
             ->when($status === 'active', fn ($w) => $w->where('is_active', true))
             ->when($status === 'inactive', fn ($w) => $w->where('is_active', false))
+            ->when($year >= 1 && $year <= 4, fn ($w) => $w->where('year_level', $year))
             ->orderBy('full_name')
             ->paginate((int) $request->query('size', 15))->withQueryString()
             ->through(fn (User $u) => $this->row($u));
 
         return Inertia::render('admin/users/index', [
             'users' => $users,
-            'filters' => ['q' => $q, 'role' => $role, 'status' => $status],
+            'filters' => ['q' => $q, 'role' => $role, 'status' => $status, 'year' => $year ? (string) $year : ''],
             'roles' => $this->roleOptions(),
             'counts' => [
                 'total' => User::count(),
@@ -106,6 +108,7 @@ class UserController extends Controller
             'id_number' => ['nullable', 'string', 'max:60'],
             'school' => ['nullable', 'string', 'max:160'],
             'section' => ['nullable', 'string', 'max:60'],
+            'year_level' => ['nullable', 'integer', 'between:1,4'],
             'phone' => ['nullable', 'string', 'max:40'],
             'password' => [$user ? 'nullable' : 'required', Password::min(8)],
             'roles' => ['required', 'array', 'min:1'],
@@ -121,6 +124,7 @@ class UserController extends Controller
         foreach (['id_number', 'school', 'section', 'phone'] as $k) {
             $user->{$k} = trim((string) ($data[$k] ?? ''));
         }
+        $user->year_level = $data['year_level'] ?? null;
         if (array_key_exists('is_active', $data)) {
             $user->is_active = (bool) $data['is_active'];
         }
@@ -151,7 +155,7 @@ class UserController extends Controller
     {
         return [
             'id' => $u->id, 'email' => $u->email, 'full_name' => $u->full_name, 'id_number' => $u->id_number, 'school' => $u->school,
-            'section' => $u->section, 'phone' => $u->phone, 'is_active' => $u->is_active, 'avatar' => $u->avatarUrl(), 'initials' => $u->initials(),
+            'section' => $u->section, 'year_level' => $u->year_level, 'phone' => $u->phone, 'is_active' => $u->is_active, 'avatar' => $u->avatarUrl(), 'initials' => $u->initials(),
             'roles' => $u->roles->map(fn ($r) => ['name' => $r->name, 'label' => $r->label ?: $r->name])->values(),
             'last_login_at' => $u->last_login_at?->toIso8601String(), 'created_at' => $u->created_at?->toIso8601String(),
         ];

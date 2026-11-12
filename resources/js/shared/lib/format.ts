@@ -1,6 +1,9 @@
 import type { Dimensions, Measurement, Subcategory, UnitSystem } from '../types';
 
 const round = (n: number, d = 1) => Math.round(n * 10 ** d) / 10 ** d;
+/** 1 → "1st year". Year levels run 1–4; null/unknown → ''. */
+export const YEAR_LEVELS = [1, 2, 3, 4] as const;
+export const yearLabel = (n: number | null | undefined) => (n ? `${n}${['st', 'nd', 'rd'][n - 1] ?? 'th'} year` : '');
 export const fmtBytes = (n: number) => (n < 1024 ? `${n} B` : n < 1048576 ? `${(n / 1024).toFixed(0)} KB` : `${(n / 1048576).toFixed(1)} MB`);
 export const fmtDuration = (sec: number) => `${Math.floor(sec / 60)}:${Math.floor(sec % 60).toString().padStart(2, '0')}`;
 export const fmtDate = (iso: string) => new Date(iso).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });

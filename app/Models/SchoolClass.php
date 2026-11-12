@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-/** A class section (e.g. AMT-2A) taught by one instructor. "Class" is a PHP reserved word, hence SchoolClass. */
+/** A class section (e.g. AMT-1A) taught by one instructor. "Class" is a PHP reserved word, hence SchoolClass. */
 class SchoolClass extends Model
 {
     use HasFactory, HasUuids;

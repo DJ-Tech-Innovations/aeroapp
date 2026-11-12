@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { Link, useParams } from 'react-router';
 import { Avatar, Badge, Card, cn, EmptyState, Icon, Input, KV, ProgressBar, Skeleton, StatCard } from '@/components/ui';
-import { fmtDate } from '@/shared';
+import { fmtDate, yearLabel } from '@/shared';
 import { QuizCard } from '../components/cards';
 import { OfflineBanner, Page, PageTitle, SectionTitle } from '../components/page';
 import { cached } from '../lib/db';
@@ -38,7 +38,7 @@ export function Students() {
                                             <Avatar src={s.avatarUrl} name={s.fullName} size={46} />
                                             <div className="min-w-0 flex-1">
                                                 <p className="truncate font-semibold text-text">{s.fullName}</p>
-                                                <p className="truncate text-xs text-muted">{s.idNumber || s.email} · {s.className}</p>
+                                                <p className="truncate text-xs text-muted">{s.idNumber || s.email} · {s.className}{s.yearLevel ? ` · ${yearLabel(s.yearLevel)}` : ''}</p>
                                                 <p className="text-xs text-muted">{s.quizzes} attempt{s.quizzes === 1 ? '' : 's'}</p>
                                             </div>
                                             {s.avg != null ? <Badge tone={tone(s.avg)}>{s.avg}%</Badge> : <Badge>New</Badge>}
@@ -66,7 +66,7 @@ export function StudentDetail() {
     return (
         <Page>
             <PageTitle back="/students" title={s.fullName} subtitle={`${s.idNumber || s.email} · ${s.className}`} />
-            <Card className="flex items-center gap-4"><Avatar src={s.avatarUrl} name={s.fullName} size={64} /><div><p className="font-semibold text-text">{s.email}</p><p className="text-sm text-muted">Section {s.section || '—'}</p></div></Card>
+            <Card className="flex items-center gap-4"><Avatar src={s.avatarUrl} name={s.fullName} size={64} /><div><p className="font-semibold text-text">{s.email}</p><p className="text-sm text-muted">{[yearLabel(s.yearLevel), s.section ? `Section ${s.section}` : ''].filter(Boolean).join(' · ') || 'Section —'}</p></div></Card>
             <div className="grid grid-cols-3 gap-3">
                 <StatCard label="Attempts" value={att.length} icon="list-check" tone="info" />
                 <StatCard label="Average" value={avg != null ? `${avg}%` : '—'} icon="chart-histogram" tone="success" />

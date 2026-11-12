@@ -2,8 +2,8 @@ import { useLiveQuery } from 'dexie-react-hooks';
 import { useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router';
 import { toast } from 'sonner';
-import { Avatar, Badge, Button, buttonClass, Card, Field, Icon, Input, StatCard, useConfirm } from '@/components/ui';
-import { fmtDate } from '@/shared';
+import { Avatar, Badge, Button, buttonClass, Card, Field, Icon, Input, Select, StatCard, useConfirm } from '@/components/ui';
+import { fmtDate, YEAR_LEVELS, yearLabel } from '@/shared';
 import { OfflineBanner, Page, PageTitle, SectionTitle } from '../components/page';
 import { cached } from '../lib/db';
 import { haptic } from '../lib/haptics';
@@ -52,7 +52,7 @@ export function Profile() {
                     <div className="mt-3 flex gap-2 sm:mt-0"><Badge tone="primary" icon={isStudent ? 'graduation-cap' : 'chalkboard-user'}>{isStudent ? 'Student' : 'Instructor'}</Badge></div>
                 </div>
                 <div className="grid grid-cols-3 divide-x divide-border border-t border-border text-center text-sm">
-                    {[['ID', profile.idNumber], ['School', profile.school], ['Section', profile.section]].map(([k, v]) => <div key={k} className="px-2 py-3"><p className="label-caps">{k}</p><p className="mt-0.5 truncate font-medium text-text">{v || '—'}</p></div>)}
+                    {[['ID', profile.idNumber], ['School', profile.school], ['Year / section', [yearLabel(profile.yearLevel), profile.section].filter(Boolean).join(' · ')]].map(([k, v]) => <div key={k} className="px-2 py-3"><p className="label-caps">{k}</p><p className="mt-0.5 truncate font-medium text-text">{v || '—'}</p></div>)}
                 </div>
             </Card>
             <OfflineBanner />
@@ -113,8 +113,9 @@ export function EditProfile() {
     const nav = useNavigate();
     const profile = useSession((s) => s.profile)!;
     const online = useNetwork((s) => s.online);
-    const [f, setF] = useState({ fullName: profile.fullName, idNumber: profile.idNumber, school: profile.school, section: profile.section });
+    const [f, setF] = useState({ fullName: profile.fullName, idNumber: profile.idNumber, school: profile.school, section: profile.section, yearLevel: profile.yearLevel ?? null });
     const [avatar, setAvatar] = useState(profile.avatarUrl);
+    const isStudentProfile = profile.role === 'student';
     const [saving, setSaving] = useState(false);
     const [uploading, setUploading] = useState(false);
     const [err, setErr] = useState('');
@@ -148,6 +149,14 @@ export function EditProfile() {
                 <Field label="Full name" className="sm:col-span-2"><Input value={f.fullName} onChange={(e) => setF({ ...f, fullName: e.target.value })} /></Field>
                 <Field label="Student / employee ID"><Input value={f.idNumber} onChange={(e) => setF({ ...f, idNumber: e.target.value })} /></Field>
                 <Field label="Section / class"><Input value={f.section} onChange={(e) => setF({ ...f, section: e.target.value })} /></Field>
+                {isStudentProfile ? (
+                    <Field label="Year level">
+                        <Select value={f.yearLevel ?? ''} onChange={(e) => setF({ ...f, yearLevel: e.target.value ? Number(e.target.value) : null })}>
+                            <option value="">Not set</option>
+                            {YEAR_LEVELS.map((y) => <option key={y} value={y}>{yearLabel(y)}</option>)}
+                        </Select>
+                    </Field>
+                ) : null}
                 <Field label="School" className="sm:col-span-2"><Input value={f.school} onChange={(e) => setF({ ...f, school: e.target.value })} /></Field>
                 <Field label="Email" hint="Ask an administrator to change your sign-in email." className="sm:col-span-2"><Input value={profile.email} readOnly disabled /></Field>
             </Card>
