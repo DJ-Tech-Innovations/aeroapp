@@ -7,6 +7,7 @@ export interface AuthUser {
     idNumber: string;
     school: string;
     section: string;
+    yearLevel: number | null;
     avatarUrl: string | null;
     roles: string[];
     permissions: string[];

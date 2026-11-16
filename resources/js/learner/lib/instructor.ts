@@ -1,7 +1,7 @@
 import type { Quiz } from '@/shared';
 import { api } from './api';
 
-export interface RosterStudent { id: string; fullName: string; email: string; idNumber: string; section: string; avatarUrl: string | null; classId: string; className: string }
+export interface RosterStudent { id: string; fullName: string; email: string; idNumber: string; section: string; yearLevel: number | null; avatarUrl: string | null; classId: string; className: string }
 export interface AttemptSummary { id: string; userId: string; quizId: string; quizTitle: string; score: number; maxScore: number; passed: boolean; submittedAt: string; answers: Record<string, string | null>; packVersion: string }
 
 /** The server scopes everything here to the signed-in instructor's own classes. */

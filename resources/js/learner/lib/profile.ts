@@ -20,7 +20,7 @@ export async function uploadProfile(userId: string) {
     const row = await db().profiles.get(userId);
     if (!row) return;
     const p = row.data;
-    await api.patch('/me', { fullName: p.fullName, idNumber: p.idNumber, school: p.school, section: p.section });
+    await api.patch('/me', { fullName: p.fullName, idNumber: p.idNumber, school: p.school, section: p.section, yearLevel: p.yearLevel ?? null });
     await db().profiles.update(userId, { pendingSync: false });
 }
 

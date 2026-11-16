@@ -28,7 +28,7 @@ class InstructorController extends Controller
         foreach ($classes as $c) {
             foreach ($c->students as $s) {
                 $rows[] = [
-                    'id' => $s->id, 'fullName' => $s->full_name, 'email' => $s->email, 'idNumber' => $s->id_number, 'section' => $s->section,
+                    'id' => $s->id, 'fullName' => $s->full_name, 'email' => $s->email, 'idNumber' => $s->id_number, 'section' => $s->section, 'yearLevel' => $s->year_level,
                     'avatarUrl' => $s->avatarUrl(), 'classId' => $c->id, 'className' => $c->name,
                 ];
             }

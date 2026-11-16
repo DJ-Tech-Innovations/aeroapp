@@ -13,7 +13,7 @@ export function ClassForm({ klass, instructors, onDone }: { klass?: { id: string
     const submit = () => (klass ? form.put(`/admin/classes/${klass.id}`, { preserveScroll: true, onSuccess: onDone }) : form.post('/admin/classes', { onSuccess: onDone }));
     return (
         <form onSubmit={(e) => { e.preventDefault(); submit(); }} className="space-y-4">
-            <Field label="Class name" required error={form.errors.name} hint="For example AMT-2A or Section B — Morning."><Input autoFocus value={form.data.name} onChange={(e) => form.setData('name', e.target.value)} /></Field>
+            <Field label="Class name" required error={form.errors.name} hint="For example AMT-1A or Section B — Morning."><Input autoFocus value={form.data.name} onChange={(e) => form.setData('name', e.target.value)} /></Field>
             <Field label="Instructor" required error={form.errors.instructor_id} hint={instructors.length ? 'Only users whose role can use the instructor app are listed.' : 'Create a user with the Instructor role first.'}>
                 <Select value={form.data.instructor_id} onChange={(e) => form.setData('instructor_id', e.target.value)}>
                     {instructors.map((i) => <option key={i.id} value={i.id}>{i.label}</option>)}
